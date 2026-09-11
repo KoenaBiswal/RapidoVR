@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rapido Driver — Work System UI</title>
+<style>
+  :root{
+    --ink:#171614;
+    --paper:#F5EDE0;
+    --yellow:#FFC933;
+    --moss:#3D6B4F;
+    --rust:#B23A2E;
+    --stone:#8A8378;
+    --stone-light:#E7DFCF;
+    --white:#FFFDF8;
+  }
+  @font-face{font-family:'sg';src:local('Space Grotesk');}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 60px;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:22px;
+    letter-spacing:-0.01em;
+    margin-bottom:4px;
+  }
+  .sub{
+    color:var(--stone);
+    font-size:13px;
+    margin-bottom:24px;
+    text-align:center;
+  }
+  .switcher{
+    display:flex;
+    gap:6px;
+    background:var(--white);
+    border:1px solid var(--stone-light);
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .switcher button{
+    border:none;
+    background:transparent;
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-family:'Inter',sans-serif;
+    color:var(--stone);
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .switcher button.active{
+    background:var(--ink);
+    color:var(--yellow);
+  }
+
+  .phone{
+    width:360px;
+    max-width:92vw;
+    height:740px;
+    background:var(--white);
+    border-radius:36px;
+    border:10px solid var(--ink);
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 20px 50px rgba(23,22,20,0.25);
+  }
+  .notch{
+    position:absolute;
+    top:0; left:50%; transform:translateX(-50%);
+    width:120px; height:22px;
+    background:var(--ink);
+    border-radius:0 0 14px 14px;
+    z-index:20;
+  }
+  .screen{
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column;
+    padding-top:34px;
+    overflow:hidden;
+  }
+  .screen.active{display:flex;}
+
+  /* status bar row */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px 10px;
+  }
+  .topbar .greet{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:17px;
+  }
+  .avatar{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--stone-light);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px; font-weight:600; color:var(--ink);
+  }
+
+  /* ---- HOME ---- */
+  .map{
+    margin:6px 18px 0;
+    height:230px;
+    border-radius:18px;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 26px, rgba(138,131,120,0.18) 27px),
+      repeating-linear-gradient(90deg, transparent, transparent 26px, rgba(138,131,120,0.18) 27px),
+      var(--stone-light);
+    position:relative;
+    overflow:hidden;
+  }
+  .map .pin{
+    position:absolute; width:14px; height:14px; border-radius:50% 50% 50% 0;
+    background:var(--ink); transform:rotate(-45deg);
+    top:45%; left:48%;
+  }
+  .status-pill{
+    position:absolute; top:14px; left:14px;
+    background:var(--white);
+    border-radius:20px;
+    padding:6px 12px;
+    font-size:12px;
+    display:flex; align-items:center; gap:6px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;}
+  .dot.on{background:var(--moss);}
+  .dot.off{background:var(--rust);}
+
+  .go-panel{
+    margin:18px 18px 0;
+    background:var(--ink);
+    border-radius:20px;
+    padding:20px;
+    color:var(--white);
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .go-row{display:flex; align-items:center; justify-content:space-between;}
+  .go-label{font-size:13px; color:var(--stone-light); margin-bottom:4px;}
+  .go-value{font-family:'Space Grotesk',sans-serif; font-size:26px;}
+  .toggle{
+    width:56px; height:32px; border-radius:20px;
+    background:var(--rust);
+    position:relative; cursor:pointer;
+    transition:background .2s ease;
+    border:none;
+  }
+  .toggle.on{background:var(--moss);}
+  .toggle .knob{
+    position:absolute; top:3px; left:3px;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--white);
+    transition:left .2s ease;
+  }
+  .toggle.on .knob{left:27px;}
+  .stat-row{display:flex; gap:10px; margin-top:16px;}
+  .stat{
+    flex:1; background:rgba(255,255,255,0.06);
+    border-radius:12px; padding:12px;
+  }
+  .stat .n{font-family:'Space Grotesk',sans-serif; font-size:18px;}
+  .stat .l{font-size:11px; color:var(--stone-light); margin-top:2px;}
+  .big-go{
+    margin-top:16px;
+    background:var(--yellow);
+    color:var(--ink);
+    border:none;
+    border-radius:16px;
+    padding:16px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:16px;
+    cursor:pointer;
+  }
+  .big-go.stop{background:var(--rust); color:var(--white);}
+
+  /* ---- REQUEST ---- */
+  .req-wrap{flex:1; display:flex; flex-direction:column; padding:0 18px;}
+  .timer-ring{
+    width:64px; height:64px; border-radius:50%;
+    border:5px solid var(--yellow);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-size:20px;
+    margin:8px auto 14px;
+  }
+  .fare-card{
+    background:var(--stone-light);
+    border-radius:18px;
+    padding:18px;
+  }
+  .fare-amt{font-family:'Space Grotesk',sans-serif; font-size:34px;}
+  .fare-sub{font-size:12px; color:var(--stone); margin-top:2px;}
+  .route{margin-top:16px;}
+  .route-row{display:flex; gap:10px; margin-bottom:14px;}
+  .route-marker{
+    width:10px;height:10px;border-radius:50%;
+    margin-top:5px; flex-shrink:0;
+  }
+  .route-marker.pick{background:var(--moss);}
+  .route-marker.drop{background:var(--rust);}
+  .route-text .t{font-size:14px; font-weight:600;}
+  .route-text .d{font-size:12px; color:var(--stone);}
+  .req-actions{
+    display:flex; gap:10px; margin-top:auto; padding-bottom:22px;
+  }
+  .req-actions button{
+    flex:1; border:none; border-radius:14px; padding:15px;
+    font-family:'Space Grotesk',sans-serif; font-size:15px;
+    cursor:pointer;
+  }
+  .decline{background:var(--stone-light); color:var(--ink);}
+  .accept{background:var(--moss); color:var(--white);}
+
+  /* ---- TRIP ---- */
+  .trip-map{
+    margin:0 18px; height:190px; border-radius:18px;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 26px, rgba(138,131,120,0.18) 27px),
+      repeating-linear-gradient(90deg, transparent, transparent 26px, rgba(138,131,120,0.18) 27px),
+      var(--stone-light);
+    position:relative;
+  }
+  .trip-line{
+    position:absolute; top:30%; left:20%; width:60%; height:2px;
+    background:var(--ink); opacity:0.5;
+  }
+  .trip-card{
+    margin:16px 18px 0; background:var(--white); border:1px solid var(--stone-light);
+    border-radius:16px; padding:16px;
+  }
+  .trip-stage{
+    display:inline-block; font-size:11px; padding:4px 10px; border-radius:20px;
+    background:var(--yellow); color:var(--ink); font-weight:600; margin-bottom:10px;
+  }
+  .rider-row{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  .rider-row .name{font-weight:600; font-size:14px;}
+  .rider-row .veh{font-size:12px; color:var(--stone);}
+  .trip-actions{display:flex; gap:10px; padding:0 18px; margin-top:16px;}
+  .trip-actions button{
+    flex:1; border:none; border-radius:14px; padding:14px;
+    font-family:'Space Grotesk',sans-serif; font-size:14px; cursor:pointer;
+  }
+  .ghost{background:var(--white); border:1px solid var(--stone-light) !important; color:var(--ink);}
+  .primary{background:var(--ink); color:var(--yellow);}
+
+  /* ---- EARNINGS ---- */
+  .earn-hero{
+    margin:8px 18px 0; background:var(--ink); border-radius:20px; padding:20px; color:var(--white);
+  }
+  .earn-amt{font-family:'Space Grotesk',sans-serif; font-size:36px; color:var(--yellow);}
+  .earn-label{font-size:12px; color:var(--stone-light); margin-top:2px;}
+  .bars{display:flex; align-items:flex-end; gap:8px; height:70px; margin-top:16px;}
+  .bar{flex:1; background:var(--yellow); border-radius:4px 4px 0 0;}
+  .bar-labels{display:flex; gap:8px; margin-top:6px;}
+  .bar-labels span{flex:1; text-align:center; font-size:10px; color:var(--stone-light);}
+  .list-title{font-size:13px; font-weight:600; margin:18px 18px 8px;}
+  .trip-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 18px; border-bottom:1px solid var(--stone-light);
+  }
+  .trip-item .t1{font-size:13px; font-weight:600;}
+  .trip-item .t2{font-size:11px; color:var(--stone);}
+  .trip-item .amt{font-family:'Space Grotesk',sans-serif; font-size:15px;}
+
+  /* ---- PROFILE ---- */
+  .prof-head{display:flex; align-items:center; gap:14px; padding:8px 18px 0;}
+  .prof-avatar{width:56px;height:56px;border-radius:50%; background:var(--yellow);
+    display:flex;align-items:center;justify-content:center; font-family:'Space Grotesk',sans-serif; font-size:20px;}
+  .prof-name{font-family:'Space Grotesk',sans-serif; font-size:18px;}
+  .prof-id{font-size:12px; color:var(--stone);}
+  .rating-row{display:flex; gap:16px; margin:18px 18px 0;}
+  .rating-box{flex:1; background:var(--stone-light); border-radius:14px; padding:12px; text-align:center;}
+  .rating-box .n{font-family:'Space Grotesk',sans-serif; font-size:18px;}
+  .rating-box .l{font-size:11px; color:var(--stone); margin-top:2px;}
+  .doc-item{
+    display:flex; justify-content:space-between; align-items:center;
+    margin:0 18px; padding:14px 0; border-bottom:1px solid var(--stone-light);
+  }
+  .doc-item .name{font-size:13px;}
+  .doc-status{font-size:11px; padding:4px 10px; border-radius:20px; font-weight:600;}
+  .doc-status.ok{background:rgba(61,107,79,0.15); color:var(--moss);}
+  .doc-status.warn{background:rgba(178,58,46,0.12); color:var(--rust);}
+
+  /* bottom nav */
+  .bottomnav{
+    position:absolute; bottom:0; left:0; right:0;
+    display:flex; justify-content:space-around;
+    padding:12px 10px 16px;
+    background:var(--white);
+    border-top:1px solid var(--stone-light);
+  }
+  .navitem{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    font-size:10px; color:var(--stone);
+  }
+  .navitem.on{color:var(--ink); font-weight:600;}
+  .navicon{width:18px; height:18px; border-radius:5px; background:var(--stone-light);}
+  .navitem.on .navicon{background:var(--yellow);}
+</style>
+</head>
+<body>
+
+<h1>Rapido Driver — Work System</h1>
+<div class="sub">Go online → accept a ride → complete the trip → track earnings</div>
+
+<div class="switcher" id="switcher">
+  <button data-screen="home" class="active">Home</button>
+  <button data-screen="request">Request</button>
+  <button data-screen="trip">Trip</button>
+  <button data-screen="earnings">Earnings</button>
+  <button data-screen="profile">Profile</button>
+</div>
+
+<div class="phone">
+  <div class="notch"></div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="topbar">
+      <div>
+        <div class="greet" id="greetText">Good afternoon, Raju</div>
+      </div>
+      <div class="avatar">R</div>
+    </div>
+    <div class="map">
+      <div class="status-pill"><span class="dot off" id="mapDot"></span><span id="mapText">You're offline</span></div>
+      <div class="pin"></div>
+    </div>
+    <div class="go-panel">
+      <div>
+        <div class="go-row">
+          <div>
+            <div class="go-label">Status</div>
+            <div class="go-value" id="statusValue">Offline</div>
+          </div>
+          <button class="toggle" id="onlineToggle" onclick="toggleOnline()">
+            <div class="knob"></div>
+          </button>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="n">₹640</div><div class="l">Today's earnings</div></div>
+          <div class="stat"><div class="n">7</div><div class="l">Trips done</div></div>
+          <div class="stat"><div class="n">4h 20m</div><div class="l">Online time</div></div>
+        </div>
+      </div>
+      <button class="big-go" id="goBtn" onclick="toggleOnline()">Go online</button>
+    </div>
+  </div>
+
+  <!-- REQUEST -->
+  <div class="screen" id="screen-request">
+    <div class="topbar"><div class="greet">New ride request</div><div></div></div>
+    <div class="req-wrap">
+      <div class="timer-ring" id="timerRing">12</div>
+      <div class="fare-card">
+        <div class="fare-amt">₹128</div>
+        <div class="fare-sub">2.4 km away · trip 5.1 km · cash</div>
+        <div class="route">
+          <div class="route-row">
+            <div class="route-marker pick"></div>
+            <div class="route-text"><div class="t">Salt Lake Sector 5</div><div class="d">Pickup · 2.4 km</div></div>
+          </div>
+          <div class="route-row">
+            <div class="route-marker drop"></div>
+            <div class="route-text"><div class="t">Park Street</div><div class="d">Drop · 5.1 km trip</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="req-actions">
+        <button class="decline" onclick="setScreen('home')">Decline</button>
+        <button class="accept" onclick="setScreen('trip')">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRIP -->
+  <div class="screen" id="screen-trip">
+    <div class="topbar"><div class="greet">On trip</div><div></div></div>
+    <div class="trip-map"><div class="trip-line"></div></div>
+    <div class="trip-card">
+      <div class="trip-stage" id="tripStage">Heading to pickup</div>
+      <div class="rider-row">
+        <div class="avatar">A</div>
+        <div>
+          <div class="name">Ananya Sen</div>
+          <div class="veh">Rated 4.9 · 3 rides today with you</div>
+        </div>
+      </div>
+      <div class="route">
+        <div class="route-row">
+          <div class="route-marker pick"></div>
+          <div class="route-text"><div class="t">Salt Lake Sector 5</div><div class="d">Pickup point</div></div>
+        </div>
+        <div class="route-row">
+          <div class="route-marker drop"></div>
+          <div class="route-text"><div class="t">Park Street</div><div class="d">Drop point · ₹128</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="trip-actions">
+      <button class="ghost" onclick="callRider()">Call rider</button>
+      <button class="primary" id="tripAdvanceBtn" onclick="advanceTrip()">Arrived at pickup</button>
+    </div>
+  </div>
+
+  <!-- EARNINGS -->
+  <div class="screen" id="screen-earnings">
+    <div class="topbar"><div class="greet">Earnings</div><div class="avatar">R</div></div>
+    <div class="earn-hero">
+      <div class="earn-amt">₹4,860</div>
+      <div class="earn-label">This week · 38 trips</div>
+      <div class="bars">
+        <div class="bar" style="height:40%"></div>
+        <div class="bar" style="height:65%"></div>
+        <div class="bar" style="height:30%"></div>
+        <div class="bar" style="height:80%"></div>
+        <div class="bar" style="height:55%"></div>
+        <div class="bar" style="height:90%"></div>
+        <div class="bar" style="height:20%"></div>
+      </div>
+      <div class="bar-labels">
+        <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+      </div>
+    </div>
+    <div class="list-title">Recent trips</div>
+    <div style="overflow-y:auto; flex:1;">
+      <div class="trip-item"><div><div class="t1">Park Street → Howrah</div><div class="t2">Today, 2:40 PM</div></div><div class="amt">₹142</div></div>
+      <div class="trip-item"><div><div class="t1">Sector 5 → New Town</div><div class="t2">Today, 1:15 PM</div></div><div class="amt">₹98</div></div>
+      <div class="trip-item"><div><div class="t1">Gariahat → Ballygunge</div><div class="t2">Today, 11:50 AM</div></div><div class="amt">₹76</div></div>
+      <div class="trip-item"><div><div class="t1">Esplanade → Sealdah</div><div class="t2">Yesterday, 6:30 PM</div></div><div class="amt">₹110</div></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="screen-profile">
+    <div class="topbar"><div class="greet">Profile</div><div></div></div>
+    <div class="prof-head">
+      <div class="prof-avatar">R</div>
+      <div>
+        <div class="prof-name">Raju Mahato</div>
+        <div class="prof-id">Driver ID RPD-88213 · Bike</div>
+      </div>
+    </div>
+    <div class="rating-row">
+      <div class="rating-box"><div class="n">4.87</div><div class="l">Rating</div></div>
+      <div class="rating-box"><div class="n">96%</div><div class="l">Acceptance</div></div>
+      <div class="rating-box"><div class="n">3%</div><div class="l">Cancellation</div></div>
+    </div>
+    <div class="list-title">Documents &amp; vehicle</div>
+    <div class="doc-item"><div class="name">Driving licence</div><div class="doc-status ok">Verified</div></div>
+    <div class="doc-item"><div class="name">Vehicle RC</div><div class="doc-status ok">Verified</div></div>
+    <div class="doc-item"><div class="name">Insurance</div><div class="doc-status warn">Expires in 6 days</div></div>
+    <div class="doc-item"><div class="name">Helmet check</div><div class="doc-status ok">Verified</div></div>
+  </div>
+
+  <div class="bottomnav" id="bottomnav">
+    <div class="navitem on" data-screen="home"><div class="navicon"></div>Home</div>
+    <div class="navitem" data-screen="request"><div class="navicon"></div>Requests</div>
+    <div class="navitem" data-screen="trip"><div class="navicon"></div>Trip</div>
+    <div class="navitem" data-screen="earnings"><div class="navicon"></div>Earnings</div>
+    <div class="navitem" data-screen="profile"><div class="navicon"></div>Profile</div>
+  </div>
+</div>
+
+<script>
+let online = false;
+let tripStage = 0; // 0 = to pickup, 1 = on trip, 2 = completed
+
+function setScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.switcher button').forEach(b=>b.classList.toggle('active', b.dataset.screen===name));
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('on', n.dataset.screen===name));
+}
+
+document.getElementById('switcher').addEventListener('click', e=>{
+  if(e.target.dataset.screen) setScreen(e.target.dataset.screen);
+});
+document.getElementById('bottomnav').addEventListener('click', e=>{
+  const item = e.target.closest('.navitem');
+  if(item) setScreen(item.dataset.screen);
+});
+
+function toggleOnline(){
+  online = !online;
+  const toggle = document.getElementById('onlineToggle');
+  const goBtn = document.getElementById('goBtn');
+  const statusValue = document.getElementById('statusValue');
+  const mapDot = document.getElementById('mapDot');
+  const mapText = document.getElementById('mapText');
+  toggle.classList.toggle('on', online);
+  goBtn.classList.toggle('stop', online);
+  goBtn.textContent = online ? 'Go offline' : 'Go online';
+  statusValue.textContent = online ? 'Online' : 'Offline';
+  mapDot.classList.toggle('on', online);
+  mapDot.classList.toggle('off', !online);
+  mapText.textContent = online ? 'Looking for rides nearby' : "You're offline";
+
+  if(online){
+    setTimeout(()=>{ if(online) setScreen('request'); }, 900);
+  }
+}
+
+function advanceTrip(){
+  const stageEl = document.getElementById('tripStage');
+  const btn = document.getElementById('tripAdvanceBtn');
+  if(tripStage===0){
+    tripStage=1;
+    stageEl.textContent = 'Trip in progress';
+    btn.textContent = 'Complete trip';
+  } else {
+    tripStage=0;
+    stageEl.textContent = 'Heading to pickup';
+    btn.textContent = 'Arrived at pickup';
+    setScreen('earnings');
+  }
+}
+
+function callRider(){
+  // demo only — no real call action
+}
+</script>
+
+</body>
+</html>
