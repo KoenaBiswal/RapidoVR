@@ -4,6 +4,18 @@ A comprehensive project featuring the **Rapido Driver Work System UI** and a **h
 
 ---
 
+## 👥 Contributors
+
+| Roll Number | Name |
+| :--- | :--- |
+| **23MF3IM07** | Praveen Kumar |
+| **23MF3IM08** | Stanley Jones |
+| **23MF3IM09** | Kavya Nagar |
+| **23MF3IM10** | Khushi Pakhre |
+| **23MF3IM11** | Koena Biswal |
+
+---
+
 ## 📱 1. Rapido Driver UI (`rapido_driver_ui.html`)
 Created by **Khushi Pakhre**, this interactive web application models the complete workflow and decision states of a Rapido Captain:
 - **Offline / Online State Toggle**: Duty status management.
