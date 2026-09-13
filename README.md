@@ -1,4 +1,4 @@
-﻿# Rapido IIT Kharagpur — Driver System & 3D Cinematic Animation
+﻿# Rapido IIT Kharagpur - Driver System & 3D Cinematic Animation
 
 A comprehensive project featuring the **Rapido Driver Work System UI** and a **high-fidelity 3D cinematic animation** of the Rapido bike-taxi workflow across the Indian Institute of Technology (IIT) Kharagpur campus (from the iconic Main Heritage Building to Nalanda Academic Complex).
 
