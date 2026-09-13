@@ -1,10 +1,10 @@
-﻿# 🚖 Rapido IIT Kharagpur — Driver System & 3D Cinematic Animation
+﻿# Rapido IIT Kharagpur — Driver System & 3D Cinematic Animation
 
 A comprehensive project featuring the **Rapido Driver Work System UI** and a **high-fidelity 3D cinematic animation** of the Rapido bike-taxi workflow across the Indian Institute of Technology (IIT) Kharagpur campus (from the iconic Main Heritage Building to Nalanda Academic Complex).
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 | Roll Number | Name |
 | :--- | :--- |
@@ -16,7 +16,7 @@ A comprehensive project featuring the **Rapido Driver Work System UI** and a **h
 
 ---
 
-## 📱 1. Rapido Driver UI (`rapido_driver_ui.html`)
+## 1. Rapido Driver UI (`rapido_driver_ui.html`)
 This interactive web application models the complete workflow and decision states of a Rapido Captain:
 - **Offline / Online State Toggle**: Duty status management.
 - **Ride Request Card**: Pickup (IIT KGP Main Building), drop-off (Nalanda Complex), estimated fare, distance, and acceptance timer.
@@ -28,7 +28,7 @@ To test the UI, open `rapido_driver_ui.html` in any modern web browser.
 
 ---
 
-## 🎬 2. 3D Cinematic Animation (`iitkgp_rapido_animation.mp4`)
+## 2. 3D Cinematic Animation (`iitkgp_rapido_animation.mp4`)
 A complete 75-second (1,800 frames @ 24 fps) cinematic animation rendered in HD:
 - **Route**: IIT Kharagpur Main Heritage Building → Scholars Avenue → Hijli Detention Camp intersection → Nalanda Academic Complex.
 - **Workflow Journey**:
@@ -55,7 +55,7 @@ A complete 75-second (1,800 frames @ 24 fps) cinematic animation rendered in HD:
 
 ---
 
-## 🛠️ 3. Pipeline & Generation Scripts
+## 3. Pipeline & Generation Scripts
 
 - **`build_masterpiece_animation.py`**: Full procedural Python script to build the entire 3D scene in Blender (geometry, rigs, materials, cameras, timeline markers).
 - **`generate_highres_textures.py`**: Procedural generation script for all 2D high-res textures.
