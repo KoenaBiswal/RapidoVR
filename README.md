@@ -17,7 +17,7 @@ A comprehensive project featuring the **Rapido Driver Work System UI** and a **h
 ---
 
 ## 📱 1. Rapido Driver UI (`rapido_driver_ui.html`)
-Created by **Khushi Pakhre**, this interactive web application models the complete workflow and decision states of a Rapido Captain:
+This interactive web application models the complete workflow and decision states of a Rapido Captain:
 - **Offline / Online State Toggle**: Duty status management.
 - **Ride Request Card**: Pickup (IIT KGP Main Building), drop-off (Nalanda Complex), estimated fare, distance, and acceptance timer.
 - **Navigation & En Route View**: Turn-by-turn routing along Scholars Avenue with real-time speed and status updates.
