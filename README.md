@@ -64,7 +64,7 @@ A complete 75-second (1,800 frames @ 24 fps) cinematic animation rendered in HD:
 
 ---
 
-## 🎨 4. Textures & Visual Assets
+## 4. Textures & Visual Assets
 
 - `rapido_phone_screen.png`: High-resolution booking UI screen texture.
 - `iitkgp_clock_face.png`: Heritage clock face for the Main Building tower.
